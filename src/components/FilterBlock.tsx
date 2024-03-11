@@ -1,0 +1,95 @@
+import styled from "styled-components";
+import TransfersFilter from "./TransfersFilter";
+import CompaniesFilter from "./CompaniesFilter";
+import { useState } from "react";
+
+const FilterBlock = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <FilterBlockStyle $isOpen={isOpen}>
+      <div className="head">
+        <p>Любая авиакомпания, любое кол-во пересадок</p>
+        <button onClick={() => setIsOpen(!isOpen)}>
+          <span>Открыть настройки</span>
+          <img src="./icons/arrow.png" alt="arrow" />
+        </button>
+      </div>
+      <div className="body">
+        <TransfersFilter />
+        <CompaniesFilter />
+      </div>
+    </FilterBlockStyle>
+  );
+};
+
+const FilterBlockStyle = styled.div<{ $isOpen: boolean }>`
+  position: absolute;
+  top: 0;
+  left: -296px;
+  margin-bottom: max(3.4rem, 25px);
+
+  .head {
+    display: none;
+  }
+
+  @media (max-width: 1360px) {
+    position: static;
+    border-radius: 10px;
+    background: rgb(78, 20, 140);
+    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.25);
+
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgb(247, 249, 247);
+      line-height: 19px;
+      padding: 12px 23px;
+
+      button {
+        font-size: 12px;
+        line-height: 15px;
+        background-color: transparent;
+
+        img {
+          transition: all 200ms linear;
+          margin-left: 17px;
+          transform: ${(props) => (props.$isOpen ? "scale(-1)" : "")};
+        }
+      }
+    }
+
+    .body {
+      display: flex;
+      gap: 66px;
+      transition: all 200ms linear;
+      padding: ${(props) => (props.$isOpen ? "5px 23px 41px" : "0 23px")};
+      height: ${(props) => (props.$isOpen ? "223px" : "0px")};
+      border-top: ${(props) =>
+        props.$isOpen ? "1px solid rgba(128, 0, 255, 0.3)" : ""};
+
+      div {
+        display: ${(props) => (props.$isOpen ? "" : "none")};
+      }
+    }
+  }
+
+  @media (max-width: 670px) {
+    .head {
+      button {
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 485px) {
+    .body {
+      height: ${(props) => (props.$isOpen ? "240px" : "0px")};
+    }
+  }
+`;
+
+export default FilterBlock;
