@@ -2,14 +2,32 @@ import styled from "styled-components";
 import OptionsBlock from "./OptionsBlock";
 import FilterBlock from "./FilterBlock";
 import TicketCard from "./TicketCard";
+import { useDispatch, useSelector } from "react-redux";
+import { ITicket } from "../types";
+import { useEffect } from "react";
+import { fetchTickets } from "../store/slices/ticketsSlice";
+import { AppDispatch, RootState } from "../store/store";
 
 const MainBlock = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const tickets = useSelector((state: RootState) => state.tickets);
+
+  useEffect(() => {
+    dispatch(fetchTickets());
+  }, [dispatch]);
+
+  console.log(tickets);
+
   return (
     <MainBlockStyle>
       <div className="container">
         <OptionsBlock />
         <FilterBlock />
-        <TicketCard />
+        <ul className="tickets">
+          {tickets.map((ticket: ITicket) => (
+            <TicketCard key={ticket.id} ticket={ticket} />
+          ))}
+        </ul>
         <button>Загрузить еще билеты</button>
       </div>
     </MainBlockStyle>
@@ -40,6 +58,12 @@ const MainBlockStyle = styled.section`
     &:active {
       opacity: 0.6;
     }
+  }
+
+  .tickets {
+    display: flex;
+    flex-direction: column;
+    gap: 47px;
   }
 `;
 

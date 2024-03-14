@@ -1,23 +1,44 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import styled from "styled-components";
+import { IItem, IOtions } from "../types";
+
+const companies: IItem[] = [
+  { value: "pobeda", label: "Победа" },
+  { value: "redWings", label: "Red Wings" },
+  { value: "s7Airlines", label: "S7 Airlines" },
+];
 
 const CompaniesFilter: FC = () => {
+  const [options, setOptions] = useState<IOtions>({
+    pobeda: false,
+    redWings: false,
+    s7Airlines: false,
+  });
+
+  const handleCheckboxChange = (value: string, checked: boolean) => {
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      [value]: checked,
+    }));
+  };
+
   return (
     <CompaniesFilterStyle>
       <h3>Компании</h3>
       <ul>
-        <li>
-          <input type="checkbox" id="pobeda" />
-          <label htmlFor="pobeda">Победа</label>
-        </li>
-        <li>
-          <input type="checkbox" id="red-wings" />
-          <label htmlFor="red-wings">Red Wings</label>
-        </li>
-        <li>
-          <input type="checkbox" name="airlines" id="s7-airlines" />
-          <label htmlFor="s7-airlines">S7 Airlines</label>
-        </li>
+        {companies.map((company) => (
+          <li key={company.value}>
+            <input
+              type="checkbox"
+              id={company.value}
+              checked={options[company.value]}
+              onChange={(e) =>
+                handleCheckboxChange(company.value, e.currentTarget.checked)
+              }
+            />
+            <label htmlFor={company.value}>{company.label}</label>
+          </li>
+        ))}
       </ul>
     </CompaniesFilterStyle>
   );

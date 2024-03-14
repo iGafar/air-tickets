@@ -1,35 +1,45 @@
+import { FC } from "react";
 import styled from "styled-components";
+import { ITicket } from "../types";
 
-const TicketCard = () => {
+interface IProps {
+  ticket: ITicket;
+}
+
+const TicketCard: FC<IProps> = ({ ticket }) => {
   return (
     <TicketCardStyle>
       <div className="head">
-        <p>12680р</p>
+        <p>{ticket.price}</p>
         <figure>
-          <img src="./icons/pobeda.png" alt="company logo" />
+          <img src={ticket.company} alt="company logo" />
         </figure>
       </div>
       <div className="body">
         <div>
-          <p>SVD-LED</p>
-          <time>12:00</time>
+          <p>
+            {ticket.from} - {ticket.to}
+          </p>
+          <time>
+            {ticket.time.startTime} - {ticket.time.endTime}
+          </time>
         </div>
 
         <div>
           <p>В пути</p>
-          <time>2 ч 0 мин</time>
+          <time>{ticket.duration}</time>
         </div>
 
         <div>
           <p>Пересадки</p>
-          <time>Без пересадок</time>
+          <p>{ticket.duration}</p>
         </div>
       </div>
     </TicketCardStyle>
   );
 };
 
-const TicketCardStyle = styled.div`
+const TicketCardStyle = styled.li`
   max-width: 727px;
   padding: 38px 40px 25px;
   border-radius: 10px;

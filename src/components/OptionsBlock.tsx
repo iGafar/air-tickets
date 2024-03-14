@@ -1,20 +1,31 @@
+import { useState } from "react";
 import styled from "styled-components";
+import { IItem } from "../types";
+
+const inputs: IItem[] = [
+  { value: "cheap", label: "Самый дешевый" },
+  { value: "fast", label: "Самый быстрый" },
+  { value: "optimal", label: "Самый оптимальный" },
+];
 
 const OptionsBlock = () => {
+  const [value, setValue] = useState<string>("cheap");
+
   return (
     <OptionsBlockStyle>
-      <li>
-        <input type="radio" name="radio" id="cheap" />
-        <label htmlFor="cheap">Самый дешевый</label>
-      </li>
-      <li>
-        <input type="radio" name="radio" id="fast" />
-        <label htmlFor="fast">Самый быстрый</label>
-      </li>
-      <li>
-        <input type="radio" name="radio" id="optimal" />
-        <label htmlFor="optimal">Самый оптимальный</label>
-      </li>
+      {inputs.map((item) => (
+        <li key={item.value}>
+          <input
+            type="radio"
+            name="radio"
+            id={item.value}
+            value={item.value}
+            checked={value === item.value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+          <label htmlFor={item.value}>{item.label}</label>
+        </li>
+      ))}
     </OptionsBlockStyle>
   );
 };

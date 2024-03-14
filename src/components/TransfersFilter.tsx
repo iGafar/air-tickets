@@ -1,27 +1,46 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import styled from "styled-components";
+import { IItem, IOtions } from "../types";
+
+const transfers: IItem[] = [
+  { value: "without", label: "Без пересадок" },
+  { value: "one", label: "1 пересадка" },
+  { value: "two", label: "2 пересадки" },
+  { value: "three", label: "3 пересадки" },
+];
 
 const TransfersFilter: FC = () => {
+  const [options, setOptions] = useState<IOtions>({
+    without: false,
+    one: false,
+    two: false,
+    three: false,
+  });
+
+  const handleCheckboxChange = (value: string, checked: boolean) => {
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      [value]: checked,
+    }));
+  };
+
   return (
     <TransfersFilterStyle>
       <h3>Количество пересадок</h3>
       <ul>
-        <li>
-          <input type="checkbox" name="without" id="without" />
-          <label htmlFor="without">Без пересадок</label>
-        </li>
-        <li>
-          <input type="checkbox" name="one" id="one" />
-          <label htmlFor="one">1 пересадка</label>
-        </li>
-        <li>
-          <input type="checkbox" name="two" id="two" />
-          <label htmlFor="two">2 пересадки</label>
-        </li>
-        <li>
-          <input type="checkbox" name="three" id="three" />
-          <label htmlFor="three">3 пересадки</label>
-        </li>
+        {transfers.map((transfer: IItem) => (
+          <li key={transfer.value}>
+            <input
+              type="checkbox"
+              id={transfer.value}
+              checked={options[transfer.value]}
+              onChange={(e) =>
+                handleCheckboxChange(transfer.value, e.currentTarget.checked)
+              }
+            />
+            <label htmlFor={transfer.value}>{transfer.label}</label>
+          </li>
+        ))}
       </ul>
     </TransfersFilterStyle>
   );
