@@ -4,11 +4,11 @@ import FilterBlock from "./FilterBlock";
 import TicketCard from "./TicketCard";
 import { useDispatch, useSelector } from "react-redux";
 import { ITicket } from "../types";
-import { useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { fetchTickets } from "../store/slices/ticketsSlice";
 import { AppDispatch, RootState } from "../store/store";
 
-const MainBlock = () => {
+const MainBlock: FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const tickets = useSelector((state: RootState) => state.tickets.items);
   const ticketsLength = useSelector(
