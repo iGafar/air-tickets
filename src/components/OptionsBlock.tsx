@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
-import { IItem } from "../types";
+import { ISort, ISortOptions } from "../types";
 
-const inputs: IItem[] = [
-  { value: "cheap", label: "Самый дешевый" },
-  { value: "fast", label: "Самый быстрый" },
-  { value: "optimal", label: "Самый оптимальный" },
+const inputs: ISort[] = [
+  { value: "price", label: "Самый дешевый" },
+  { value: "duration", label: "Самый быстрый" },
+  { value: "connectionAmount", label: "Самый оптимальный" },
 ];
 
-const OptionsBlock = () => {
-  const [value, setValue] = useState<string>("cheap");
+interface IProps {
+  sortCallback: (value: ISortOptions) => void;
+}
+
+const OptionsBlock: FC<IProps> = ({ sortCallback }) => {
+  const [value, setValue] = useState<ISortOptions>("price");
+
+  useEffect(() => {
+    sortCallback(value);
+  }, [sortCallback, value]);
 
   return (
     <OptionsBlockStyle>
@@ -21,7 +29,7 @@ const OptionsBlock = () => {
             id={item.value}
             value={item.value}
             checked={value === item.value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={() => setValue(item.value)}
           />
           <label htmlFor={item.value}>{item.label}</label>
         </li>

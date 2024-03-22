@@ -1,13 +1,18 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+} from "@reduxjs/toolkit";
 import axios from "axios";
-import { ITicket } from "../../types";
+import { IData, IParams } from "../../types";
 
-export const fetchTickets = createAsyncThunk<ITicket[]>(
+export const fetchTickets = createAsyncThunk<IData, IParams>(
   "tickets/fetchTickets",
-  async (): Promise<ITicket[]> => {
+  async (params: IParams): Promise<IData> => {
     try {
-      const { data } = await axios.get<ITicket[]>(
-        "https://efaa115836ca538c.mokky.dev/tickets"
+      const { data } = await axios.get<IData>(
+        `https://efaa115836ca538c.mokky.dev/tickets?limit=${params.limit}&sortBy=${params.sortBy}${params.companyFilterParams}${params.transferFilterParams}`
       );
 
       return data;
@@ -18,9 +23,22 @@ export const fetchTickets = createAsyncThunk<ITicket[]>(
   }
 );
 
+const ticketsAdapter = createEntityAdapter();
+
+const initialState: IData = ticketsAdapter.getInitialState({
+  items: [],
+  meta: {
+    current_page: 0,
+    per_page: 0,
+    remaining_count: 0,
+    total_items: 0,
+    total_pages: 0,
+  },
+});
+
 export const ticketsSlice = createSlice({
   name: "tickets",
-  initialState: [] as ITicket[],
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchTickets.pending, () => {
@@ -28,8 +46,9 @@ export const ticketsSlice = createSlice({
     });
     builder.addCase(
       fetchTickets.fulfilled,
-      (state, action: PayloadAction<ITicket[]>) => {
-        state.splice(0, state.length, ...action.payload);
+      (state, action: PayloadAction<IData>) => {
+        state.items.splice(0, state.items.length, ...action.payload.items);
+        state.meta = action.payload.meta;
       }
     );
     builder.addCase(fetchTickets.rejected, () => {

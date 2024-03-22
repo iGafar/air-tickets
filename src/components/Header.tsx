@@ -15,6 +15,8 @@ const Header: FC = () => {
 const HeaderStyle = styled.header`
   padding-top: 20px;
   margin-bottom: 20px;
+  position: sticky;
+  top: 0;
 
   .container {
     display: flex;
@@ -24,6 +26,7 @@ const HeaderStyle = styled.header`
   }
 
   @media (max-width: 1360px) {
+    position: static;
     .container {
       max-width: 727px;
     }

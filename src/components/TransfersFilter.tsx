@@ -1,28 +1,31 @@
-import { FC, useState } from "react";
+import { FC, useEffect } from "react";
 import styled from "styled-components";
-import { IItem, IOtions } from "../types";
+import { IItem } from "../types";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
+import { changeTransfer } from "../store/slices/filterSlice";
+import { getParams } from "../utils";
 
 const transfers: IItem[] = [
-  { value: "without", label: "Без пересадок" },
-  { value: "one", label: "1 пересадка" },
-  { value: "two", label: "2 пересадки" },
-  { value: "three", label: "3 пересадки" },
+  { value: "0", label: "Без пересадок" },
+  { value: "1", label: "1 пересадка" },
+  { value: "2", label: "2 пересадки" },
+  { value: "3", label: "3 пересадки" },
 ];
 
-const TransfersFilter: FC = () => {
-  const [options, setOptions] = useState<IOtions>({
-    without: false,
-    one: false,
-    two: false,
-    three: false,
-  });
+interface IProps {
+  transferFilterCallback: (value: string) => void;
+}
 
-  const handleCheckboxChange = (value: string, checked: boolean) => {
-    setOptions((prevOptions) => ({
-      ...prevOptions,
-      [value]: checked,
-    }));
-  };
+const TransfersFilter: FC<IProps> = ({ transferFilterCallback }) => {
+  const dispatch: AppDispatch = useDispatch();
+  const transferFilter = useSelector(
+    (state: RootState) => state.filter.transfers
+  );
+
+  useEffect(() => {
+    transferFilterCallback(getParams(transferFilter, "connectionAmount"));
+  }, [transferFilter, transferFilterCallback]);
 
   return (
     <TransfersFilterStyle>
@@ -33,10 +36,10 @@ const TransfersFilter: FC = () => {
             <input
               type="checkbox"
               id={transfer.value}
-              checked={options[transfer.value]}
-              onChange={(e) =>
-                handleCheckboxChange(transfer.value, e.currentTarget.checked)
+              checked={
+                transferFilter.find((c) => c.name === transfer.value)?.checked
               }
+              onChange={() => dispatch(changeTransfer(transfer.value))}
             />
             <label htmlFor={transfer.value}>{transfer.label}</label>
           </li>

@@ -1,40 +1,42 @@
-import { FC, useState } from "react";
+import { FC, useEffect } from "react";
 import styled from "styled-components";
-import { IItem, IOtions } from "../types";
+import { IItem } from "../types";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
+import { changeCompany } from "../store/slices/filterSlice";
+import { getParams } from "../utils";
 
 const companies: IItem[] = [
   { value: "pobeda", label: "Победа" },
-  { value: "redWings", label: "Red Wings" },
-  { value: "s7Airlines", label: "S7 Airlines" },
+  { value: "red-wings", label: "Red Wings" },
+  { value: "s7-airlines", label: "S7 Airlines" },
 ];
 
-const CompaniesFilter: FC = () => {
-  const [options, setOptions] = useState<IOtions>({
-    pobeda: false,
-    redWings: false,
-    s7Airlines: false,
-  });
+interface IProps {
+  companyFilterCallback: (value: string) => void;
+}
 
-  const handleCheckboxChange = (value: string, checked: boolean) => {
-    setOptions((prevOptions) => ({
-      ...prevOptions,
-      [value]: checked,
-    }));
-  };
+const CompaniesFilter: FC<IProps> = ({ companyFilterCallback }) => {
+  const dispatch: AppDispatch = useDispatch();
+  const companyFilter = useSelector((state: RootState) => state.filter.company);
+
+  useEffect(() => {
+    companyFilterCallback(getParams(companyFilter, "company"));
+  }, [companyFilter, companyFilterCallback]);
 
   return (
     <CompaniesFilterStyle>
       <h3>Компании</h3>
       <ul>
-        {companies.map((company) => (
+        {companies.map((company: IItem) => (
           <li key={company.value}>
             <input
               type="checkbox"
               id={company.value}
-              checked={options[company.value]}
-              onChange={(e) =>
-                handleCheckboxChange(company.value, e.currentTarget.checked)
+              checked={
+                companyFilter.find((c) => c.name === company.value)?.checked
               }
+              onChange={() => dispatch(changeCompany(company.value))}
             />
             <label htmlFor={company.value}>{company.label}</label>
           </li>

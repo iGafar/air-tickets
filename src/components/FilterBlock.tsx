@@ -1,27 +1,34 @@
 import styled from "styled-components";
 import TransfersFilter from "./TransfersFilter";
 import CompaniesFilter from "./CompaniesFilter";
-import { useState } from "react";
+import { FC, memo, useState } from "react";
 
-const FilterBlock = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface IProps {
+  companyFilterCallback: (value: string) => void;
+  transferFilterCallback: (value: string) => void;
+}
 
-  return (
-    <FilterBlockStyle $isOpen={isOpen}>
-      <div className="head">
-        <p>Любая авиакомпания, любое кол-во пересадок</p>
-        <button onClick={() => setIsOpen(!isOpen)}>
-          <span>Открыть настройки</span>
-          <img src="./icons/arrow.png" alt="arrow" />
-        </button>
-      </div>
-      <div className="body">
-        <TransfersFilter />
-        <CompaniesFilter />
-      </div>
-    </FilterBlockStyle>
-  );
-};
+const FilterBlock: FC<IProps> = memo(
+  ({ companyFilterCallback, transferFilterCallback }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+      <FilterBlockStyle $isOpen={isOpen}>
+        <div className="head">
+          <p>Любая авиакомпания, любое кол-во пересадок</p>
+          <button onClick={() => setIsOpen(!isOpen)}>
+            <span>Открыть настройки</span>
+            <img src="./icons/arrow.png" alt="arrow" />
+          </button>
+        </div>
+        <div className="body">
+          <TransfersFilter transferFilterCallback={transferFilterCallback} />
+          <CompaniesFilter companyFilterCallback={companyFilterCallback} />
+        </div>
+      </FilterBlockStyle>
+    );
+  }
+);
 
 const FilterBlockStyle = styled.div<{ $isOpen: boolean }>`
   position: absolute;
@@ -31,6 +38,11 @@ const FilterBlockStyle = styled.div<{ $isOpen: boolean }>`
 
   .head {
     display: none;
+  }
+
+  .body {
+    position: fixed;
+    top: 121px;
   }
 
   @media (max-width: 1360px) {
@@ -62,6 +74,7 @@ const FilterBlockStyle = styled.div<{ $isOpen: boolean }>`
 
     .body {
       display: flex;
+      position: static;
       gap: 66px;
       transition: all 200ms linear;
       padding: ${(props) => (props.$isOpen ? "5px 23px 41px" : "0 23px")};
